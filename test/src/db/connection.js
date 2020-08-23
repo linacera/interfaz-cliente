@@ -4,7 +4,7 @@ const { QueryTypes } = require('sequelize');
 const sequelize = new Sequelize('smart_home',null, null,{
   host:'localhost',
   dialect: 'sqlite',
-  storage: '',
+  storage: '/home/johanna/Documentos/Universidad/Titulacion/smart_home.db',
   logging: false,
 })
 

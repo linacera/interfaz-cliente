@@ -3,8 +3,6 @@ const path = require('path');
 const Room = require('./models/room');
 const Device = require('./models/device');
 const Action = require('./models/action');
-var sequelize = require('./db/connection');
-const { QueryTypes } = require('sequelize');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -78,36 +76,6 @@ ipcMain.on('clicked-room', async (event, room_id) =>{
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-
-
-
-
-/*  Device.findAll({ attributes: ['id_device', 'device_name'] })
-  .then(device => {
-    console.log(device)
-  })
-  .catch(err => {
-    console.log(err)
-  })
-
-  async function getRoomWithDevice(){
-    try {
-      const awesomeCaptain = await Room.findOne({
-        where: {
-          id_room: 1
-        },
-        include: Device
-      });
-    
-      console.log(awesomeCaptain);
-    } catch (error) {
-      console.log(error);
-    }
-    
-  }
-
-  getRoomWithDevice();
-*/
 
 exports.getRooms = async () => {
   let rooms = [];
