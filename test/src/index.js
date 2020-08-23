@@ -9,6 +9,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
+let windows = [];
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -74,6 +76,26 @@ ipcMain.on('clicked-room', async (event, room_id) =>{
   });
 })
 
+ipcMain.on('clicked-device', async (event, device_id) => {
+  let actions = await getActions(device_id);
+  let device_name = await getDeviceName(device_id);
+
+  const roomWindow = new BrowserWindow({
+    width: 1000,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: true,
+    }
+  });
+  roomWindow.loadFile(path.join(__dirname, '../views/actions.html'));
+  roomWindow.webContents.openDevTools();
+  roomWindow.webContents.on('did-finish-load',  () => {
+    roomWindow.webContents.send('loaded-actions', actions, device_name);
+  });
+  
+
+})
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
@@ -102,12 +124,31 @@ async function getDevices (room_id) {
       {
         where: {room_id: room_id}
       });
-    console.log(devices);
+  //  console.log(devices);
     return devices;
   } catch (error) {
     console.log(error)
   }
+}
 
+async function getDeviceName(device_id){
+  device = await Device.findOne(
+    {attributes: ['device_name'], where: {device_id: device_id}, });
+  return device.dataValues.room_name;
+}
+
+async function getActions(device_id){
+  try {
+    //console.log('In get actions');
+    actions = await Action.findAll(
+      {
+        where: {device_id: device_id}
+      });
+    console.log(actions);
+    return actions;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 

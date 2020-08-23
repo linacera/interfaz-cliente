@@ -1,12 +1,10 @@
-
-
 $(document).ready(function() {
   $('.slider').slick({
     centerMode: true,
     centerPadding: '60px',
     slidesToShow: 3,
     speed: 1500,
-    index: 2,
+    index: 1,
     focusOnSelect:true,
     prevArrow: $('#left-button'),
     nextArrow: $('#right-button'),
@@ -15,7 +13,7 @@ $(document).ready(function() {
       settings: {
         centerMode: true,
         centerPadding: '40px',
-        slidesToShow: 2,
+        slidesToShow: 3,
       }
     }, {
       breakpoint: 480,

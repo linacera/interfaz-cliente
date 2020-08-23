@@ -2,7 +2,8 @@ const { remote, ipcRenderer } = require('electron');
 const mainProcces = remote.require('./index');
 
 
-const check = document.getElementById('check-button');
+const checkButton = document.getElementById('check-button');
+const returnButton = document.getElementById('return-button');
 const slider = document.getElementById('slider');
 const roomName = document.getElementById('room_name');
 const noDevices = document.getElementById('no-devices');
@@ -29,7 +30,25 @@ ipcRenderer.on('loaded-devices', (event, devices, room_name)=>{
             slider.appendChild(div);
         });
     }else{
+        slider.classList.remove('slider');
         noDevices.textContent = "There is no devices in this room";
     }
     
 });
+
+checkButton.addEventListener('click', () => {
+    //currentSlide = getElementById
+    currentSlide = $('.slick-current');  
+    //console.log(currentSlide.data);
+    index = currentSlide.attr("data-slick-index");
+    currentSlideId = parseInt(index, 10);
+    console.log(currentSlideId);
+    device_id = currentSlideId + 1;
+    console.log("Device id: "+device_id);
+    ipcRenderer.send('clicked-device', device_id)
+})
+
+returnButton.addEventListener('click',()=>{
+    var window = remote.getCurrentWindow();
+    window.close();
+})
