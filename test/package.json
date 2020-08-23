@@ -49,16 +49,16 @@
     "jquery": "^3.5.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
-    "sequelize": "^6.2.2",
+    "sequelize": "^6.3.4",
     "slick-carousel": "^1.8.1",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.52",
-    "@electron-forge/maker-deb": "^6.0.0-beta.51",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.51",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.51",
-    "@electron-forge/maker-zip": "^6.0.0-beta.51",
-    "electron": "^8.2.5"
+    "@electron-forge/maker-deb": "^6.0.0-beta.52",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.52",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.52",
+    "@electron-forge/maker-zip": "^6.0.0-beta.52",
+    "electron": "^8.5.0"
   }
 }
