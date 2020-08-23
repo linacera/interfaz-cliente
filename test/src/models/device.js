@@ -1,9 +1,9 @@
-var sequelize = require('../db/conection');
+var sequelize = require('../db/connection');
 const Sequelize = require('sequelize');
 const action = require('./action');
 
 const Device = sequelize.define('device', {
-    id_device: {
+    device_id: {
         type: Sequelize.SMALLINT, 
         primaryKey: true,
     },
@@ -15,6 +15,6 @@ const Device = sequelize.define('device', {
     timestamps: false,
 });
 
-Device.hasMany(action, {foreignKey: 'id_device'})
+Device.hasMany(action, {foreignKey: 'device_id'})
 
 module.exports = Device;

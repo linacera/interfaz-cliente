@@ -15,7 +15,7 @@ $(document).ready(function() {
       settings: {
         centerMode: true,
         centerPadding: '40px',
-        slidesToShow: 3,
+        slidesToShow: 2,
       }
     }, {
       breakpoint: 480,
@@ -37,9 +37,9 @@ $('.slides').slick({
 var current;
 $('.slider').on('afterChange', function() {
   current = $('.slick-current');   
-  console.log(current.attr("data-slick-index"));
+  //console.log(current.attr("data-slick-index"));
   document.getElementById('check-button').onclick = function() { 
-    current.click(console.log("cliked"));
+    
   };
 
 });
