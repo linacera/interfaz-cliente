@@ -23,13 +23,13 @@ const createWindow = () => {
 
   //cec#8001Dorado
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, '../views/index.html'));
+  mainWindow.loadFile(path.join(__dirname, './views/index.html'));
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    rooms = await this.getRooms();
+    rooms = await getRooms();
     mainWindow.webContents.send('loaded-rooms', rooms);
   });
 };
@@ -69,7 +69,7 @@ ipcMain.on('clicked-room', async (event, room_id) =>{
       nodeIntegration: true,
     }
   });
-  deviceWindow.loadFile(path.join(__dirname, '../views/devices.html'));
+  deviceWindow.loadFile(path.join(__dirname, './views/devices.html'));
   deviceWindow.webContents.openDevTools();
   deviceWindow.webContents.on('did-finish-load',  () => {
     deviceWindow.webContents.send('loaded-devices', devices, room_name);
@@ -87,7 +87,7 @@ ipcMain.on('clicked-device', async (event, device_id) => {
       nodeIntegration: true,
     }
   });
-  roomWindow.loadFile(path.join(__dirname, '../views/actions.html'));
+  roomWindow.loadFile(path.join(__dirname, './views/actions.html'));
   roomWindow.webContents.openDevTools();
   roomWindow.webContents.on('did-finish-load',  () => {
     roomWindow.webContents.send('loaded-actions', actions, device_name);
@@ -99,7 +99,7 @@ ipcMain.on('clicked-device', async (event, device_id) => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-exports.getRooms = async () => {
+async function getRooms(){
   let rooms = [];
   try {
   //  console.log('In get rooms');

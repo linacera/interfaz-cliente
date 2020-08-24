@@ -8,7 +8,7 @@ const slider = document.getElementById('slider');
 ipcRenderer.on('loaded-rooms', (event, rooms)=>{
 //    console.log(rooms);
     rooms.forEach(room => {
-        let div = document.createElement('div');
+        let divUno = document.createElement('div');
         let slideh3 = document.createElement('div');
         slideh3.className = "slide-h3";
         let img = document.createElement('img');
@@ -22,8 +22,8 @@ ipcRenderer.on('loaded-rooms', (event, rooms)=>{
      //   console.log(room.dataValues.room_name);
         slideh3.appendChild(img);
         slideh3.appendChild(i);
-        div.appendChild(slideh3);
-        slider.appendChild(div);
+        divUno.appendChild(slideh3);
+        slider.appendChild(divUno);
     });
 });
 
