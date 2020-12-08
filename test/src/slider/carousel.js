@@ -3,7 +3,7 @@ $(document).ready(function() {
     centerMode: true,
     centerPadding: '60px',
     slidesToShow: 3,
-    speed: 1500,
+    speed: 100,
     index: 1,
     focusOnSelect:true,
     prevArrow: $('#left-button'),
