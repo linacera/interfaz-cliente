@@ -1,26 +1,26 @@
 $(document).ready(function() {
   $('.slider').slick({
     centerMode: true,
-    centerPadding: '60px',
-    slidesToShow: 3,
+    centerPadding: '100px',
+    slidesToShow: 1,
     speed: 100,
     index: 1,
     focusOnSelect:true,
     prevArrow: $('#left-button'),
     nextArrow: $('#right-button'),
     responsive: [{
-      breakpoint: 768,
+      breakpoint: 1000,
       settings: {
         centerMode: true,
-        centerPadding: '40px',
-        slidesToShow: 3,
+        centerPadding: '105px',
+        slidesToShow: 1,
       }
     }, {
-      breakpoint: 480,
+      breakpoint: 400,
       settings: {
         arrows: false,
         centerMode: true,
-        centerPadding: '40px',
+        centerPadding: '105px',
         slidesToShow: 1
       }
     }]

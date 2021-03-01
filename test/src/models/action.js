@@ -10,6 +10,9 @@ const Action = sequelize.define('action', {
     action_name: {
         type: Sequelize.STRING
     },
+    actual_action: {
+        type: Sequelize.STRING
+    },
 },{
     tableName: 'action',
     timestamps: false,

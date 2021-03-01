@@ -2,7 +2,9 @@ const { remote, ipcRenderer } = require('electron');
 const mainProcces = remote.require('./index');
 
 
-const check = document.getElementById('check-button');
+const checkButton = document.getElementById('check-button');
+const nextButton = document.getElementById('right-button');
+const previousButton = document.getElementById('left-button');
 const slider = document.getElementById('slider');
 
 ipcRenderer.on('loaded-rooms', (event, rooms)=>{
@@ -11,6 +13,7 @@ ipcRenderer.on('loaded-rooms', (event, rooms)=>{
         let divUno = document.createElement('div');
         let slideh3 = document.createElement('div');
         slideh3.className = "slide-h3";
+        slideh3.id = room.dataValues.room_id;
         let img = document.createElement('img');
         img.src="../icons/"+room.dataValues.room_name+".png";
         img.className ="icon";
@@ -27,15 +30,27 @@ ipcRenderer.on('loaded-rooms', (event, rooms)=>{
     });
 });
 
-check.addEventListener('click', () => {
+const check = () => {
     //currentSlide = getElementById
     currentSlide = $('.slick-current');  
-    //console.log(currentSlide.data);
-    index = currentSlide.attr("data-slick-index");
-    currentSlideId = parseInt(index, 10);
-    console.log(currentSlideId);
-    room_id = currentSlideId + 1;
-    console.log(room_id);
+    room_id = currentSlide[0].firstElementChild.id;
     ipcRenderer.send('clicked-room', room_id)
    // mainProcces.send('clicked-room', room_id);
-})
+}
+
+const next = () => {
+    $('#slider').slick('slickNext');
+}
+
+const previous = () => {
+    $('#slider').slick('slickPrev');
+}
+
+checkButton.addEventListener('click', check);
+nextButton.addEventListener('click', next);
+previousButton.addEventListener('click', previous);
+
+ipcRenderer.on('check', check);
+ipcRenderer.on('next', next);
+ipcRenderer.on('previous', previous);
+

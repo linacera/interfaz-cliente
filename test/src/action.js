@@ -2,9 +2,11 @@ const { remote, ipcRenderer } = require('electron');
 const mainProcces = remote.require('./index');
 
 
-const check = document.getElementById('check-button');
+const checkButton = document.getElementById('check-button');
 const returnButton = document.getElementById('return-button');
 const slider = document.getElementById('slider');
+const nextButton = document.getElementById('right-button');
+const previousButton = document.getElementById('left-button');
 const deviceName = document.getElementById('device_name');
 const noActions = document.getElementById('no-actions');
 
@@ -36,7 +38,33 @@ ipcRenderer.on('loaded-actions', (event, actions, device_name)=>{
     
 });
 
-returnButton.addEventListener('click',()=>{
+const check = (element) => {
+    currentSlide = $('.slick-current');  
+    action_id = currentSlide[0].firstElementChild.id;
+    //console.log(action_id)
+    ipcRenderer.send('clicked-action', action_id);
+}
+
+const returnClicked = () => {
     var window = remote.getCurrentWindow();
+    ipcRenderer.send('closed-window')
     window.close();
-})
+}
+
+const next = () => {
+    $('#slider').slick('slickNext');
+}
+
+const previous = () => {
+    $('#slider').slick('slickPrev');
+}
+
+nextButton.addEventListener('click', next);
+returnButton.addEventListener('click', returnClicked);
+checkButton.addEventListener('click', check);
+previousButton.addEventListener('click', previous);
+
+ipcRenderer.on('next', next);
+ipcRenderer.on('check', check);
+ipcRenderer.on('return', returnClicked);
+ipcRenderer.on('previous', previous);

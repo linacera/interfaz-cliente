@@ -4,6 +4,8 @@ const mainProcces = remote.require('./index');
 
 const checkButton = document.getElementById('check-button');
 const returnButton = document.getElementById('return-button');
+const nextButton = document.getElementById('right-button');
+const previousButton = document.getElementById('left-button');
 const slider = document.getElementById('slider');
 const roomName = document.getElementById('room_name');
 const noDevices = document.getElementById('no-devices');
@@ -36,19 +38,34 @@ ipcRenderer.on('loaded-devices', (event, devices, room_name)=>{
     
 });
 
-checkButton.addEventListener('click', () => {
+const check = () =>{
     //currentSlide = getElementById
     currentSlide = $('.slick-current');  
-    //console.log(currentSlide.data);
-    index = currentSlide.attr("data-slick-index");
-    currentSlideId = parseInt(index, 10);
-    console.log(currentSlideId);
-    device_id = currentSlideId + 1;
-    console.log("Device id: "+device_id);
+    device_id = currentSlide[0].firstElementChild.id;
     ipcRenderer.send('clicked-device', device_id)
-})
+}
 
-returnButton.addEventListener('click',()=>{
+const returnClicked = () => {
     var window = remote.getCurrentWindow();
+    ipcRenderer.send('closed-window')
     window.close();
-})
+}
+
+const next = () => {
+    $('#slider').slick('slickNext');
+}
+
+const previous = () => {
+    $('#slider').slick('slickPrev');
+}
+
+ipcRenderer.on('check', check);
+ipcRenderer.on('return', returnClicked);
+ipcRenderer.on('next', next);
+ipcRenderer.on('previous', previous);
+
+
+nextButton.addEventListener('click', next);
+checkButton.addEventListener('click', check)
+returnButton.addEventListener('click', returnClicked)
+previousButton.addEventListener('click', previous);
