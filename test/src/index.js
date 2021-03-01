@@ -23,7 +23,7 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1024,
-    height: 786,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
     }
@@ -97,7 +97,7 @@ ipcMain.on('clicked-room', async (event, room_id) =>{
   // Create the browser window.
   const deviceWindow = new BrowserWindow({
     width: 1024,
-    height: 786,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
     }
@@ -116,7 +116,7 @@ ipcMain.on('clicked-device', async (event, device_id) => {
   let device_name = await getDeviceName(device_id);
   const roomWindow = new BrowserWindow({
     width: 1024,
-    height: 786,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
     }
