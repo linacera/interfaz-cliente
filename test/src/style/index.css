@@ -8,8 +8,8 @@ body {
 .container{
   border: 0px;
   margin: 0px;
-  width: 760px;
-  height: 500px;
+  width: 1024px;
+  height: 600px;
   background-color: #121116;
 }
 
@@ -78,8 +78,8 @@ body {
 
   /*center div*/
   .center{
-    width: 80%;
-    height: 100%;
+    width: 819px;
+    height: 300px;
     
   }
 
@@ -189,8 +189,16 @@ body {
 
 .slick-center {
   display: block;
-  max-width: 50% !important;
-  max-height: 20% !important;
+  max-width: 50% ;
+  max-height: 20% ;
   opacity: 1;
   color: #FEFFFF;
+}
+
+.test {
+  width:100px;
+}
+
+.test2 {
+  width: 1024px;
 }

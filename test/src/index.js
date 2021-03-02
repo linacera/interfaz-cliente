@@ -26,7 +26,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-    }
+    },
   });
 
   //cec#8001Dorado
@@ -34,13 +34,16 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, './views/index.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
-  mainWindow.webContents.on('did-finish-load', async () => {
+  mainWindow.webContents.once('did-finish-load', async () => {
     rooms = await getRooms();
     mainWindow.webContents.send('loaded-rooms', rooms);
-    currentWindow.push(mainWindow);
   });
+
+  mainWindow.webContents.once('ready-to-show', () => {
+    currentWindow.push(mainWindow);
+  })
 
   server = dgram.createSocket('udp4');
   server.on('error', function (error) {
@@ -103,11 +106,13 @@ ipcMain.on('clicked-room', async (event, room_id) =>{
     }
   });
   deviceWindow.loadFile(path.join(__dirname, './views/devices.html'));
-  deviceWindow.webContents.openDevTools();
+  //deviceWindow.webContents.openDevTools();
   deviceWindow.webContents.on('did-finish-load',  () => {
     deviceWindow.webContents.send('loaded-devices', devices, room_name);
-    currentWindow.push(deviceWindow);
   });
+  deviceWindow.webContents.once('ready-to-show', () => {
+    currentWindow.push(deviceWindow);
+  })
 })
 
 
@@ -122,7 +127,7 @@ ipcMain.on('clicked-device', async (event, device_id) => {
     }
   });
   roomWindow.loadFile(path.join(__dirname, './views/actions.html'));
-  roomWindow.webContents.openDevTools();
+  //roomWindow.webContents.openDevTools();
   roomWindow.webContents.on('did-finish-load',  () => {
     roomWindow.webContents.send('loaded-actions', actions, device_name);
     currentWindow.push(roomWindow);
