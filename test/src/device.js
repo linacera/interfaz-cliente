@@ -20,7 +20,8 @@ ipcRenderer.on('loaded-devices', (event, devices, room_name)=>{
             slideh3.className = "slide-h3";
             slideh3.id = device.dataValues.device_id;
             let img = document.createElement('img');
-            img.src="../icons/"+device.dataValues.device_name+".png";
+            console.log(device.dataValues.icon_id);
+            img.src="../icons/"+device.dataValues.icon_id+".png";
             img.className ="icon";
             let i = document.createElement('i');
             i.className = "fa fa-lg fa-trash";
@@ -42,21 +43,29 @@ const check = () =>{
     //currentSlide = getElementById
     currentSlide = $('.slick-current');  
     device_id = currentSlide[0].firstElementChild.id;
-    ipcRenderer.send('clicked-device', device_id)
+    ipcRenderer.send('clicked-device', device_id);
+    $('#check-button').addClass('green-background');
+    setTimeout(() => $('#check-button').removeClass('green-background'), 1000)
 }
 
 const returnClicked = () => {
     var window = remote.getCurrentWindow();
     ipcRenderer.send('closed-window')
+    $('#return-button').addClass('green-background');
+    setTimeout(() => $('#return-button').removeClass('green-background'), 1000)
     window.close();
 }
 
 const next = () => {
     $('#slider').slick('slickNext');
+    $('#right-button').addClass('green-background');
+    setTimeout(() => $('#right-button').removeClass('green-background'), 1000)
 }
 
 const previous = () => {
     $('#slider').slick('slickPrev');
+    $('#left-button').addClass('green-background');
+    setTimeout(() => $('#left-button').removeClass('green-background'), 1000)
 }
 
 ipcRenderer.on('check', check);

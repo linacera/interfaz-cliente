@@ -18,11 +18,12 @@ jQuery.event.special.touchmove = {
   }
 };
 
-$('.slider').on('init', () => {
-  console.log('onInit');
-  window.resizeTo(100,100)
-  window.resizeTo(1025,600)
-})
+// $('.slider').on('init', () => {
+//   console.log('onInit');
+//   window.resizeTo(10,10)
+//   window.resizeTo(800,600)
+//   window.document.children[0]
+// })
 $(document).ready(function() {
   $('.slider').slick({
     centerMode: true,
@@ -35,14 +36,15 @@ $(document).ready(function() {
     prevArrow: $('#left-button'),
     nextArrow: $('#right-button'),
     responsive: [{
-      breakpoint: 1024,
+      breakpoint: 801,
       settings: {
+        arrows: false,
         centerMode: true,
         centerPadding: '40px',
         slidesToShow: 1,
       }
     }, {
-      breakpoint: 600,
+      breakpoint: 400,
       settings: {
         arrows: false,
         centerMode: true,
