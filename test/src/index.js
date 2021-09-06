@@ -1,36 +1,80 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const path = require('path');
 const Room = require('./models/room');
 const Device = require('./models/device');
 const Action = require('./models/action');
-var sequelize = require('./db/connection');
-const { QueryTypes } = require('sequelize');
+const mainAction = require('./models/mainAction');
+const mqtt = require('mqtt');
+const dgram = require('dgram');
+
+const client  = mqtt.connect('mqtt://mqtt.beebotte.com', {
+  username: 'MbWwPZK9laPYyBXU8NFRsE9SOFlqzM8H', password: ''
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
 
+let windows = [];
+let server;
+let currentWindow = [];
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: 800,
+    height: 600,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
-    }
+    },
   });
 
   //cec#8001Dorado
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, '../views/index.html'));
+  mainWindow.loadFile(path.join(__dirname, './views/actions.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
-  mainWindow.webContents.on('did-finish-load', async () => {
-    rooms = await this.getRooms();
-    mainWindow.webContents.send('loaded-rooms', rooms);
+  mainWindow.webContents.once('did-finish-load', async () => {
+    actions = await getAllMainActions();
+    mainWindow.webContents.send('loaded-actions', actions,device_name= 'Main Actions', isMainApp = true);
+    mainWindow.setFullScreen(true)
+    currentWindow.push(mainWindow);
+    mainWindow.show();
+    //rooms = await getRooms();
+    //mainWindow.webContents.send('loaded-rooms', rooms);
+    //mainWindow.setFullScreen(true)
+    //currentWindow.push(mainWindow);
+    //mainWindow.show();
+  });
+
+
+  server = dgram.createSocket('udp4');
+  server.on('error', function (error) {
+    console.log('Error: ' + error);
+    server.close();
+  });
+  server.bind(5123);
+  server.on('message', (msg, rinfo) => {
+   // console.log('[receivedMessage]', `${msg}`, currentWindow)
+    console.log(`${msg}`)
+    switch (`${msg}`) {
+      case "1":
+        currentWindow[currentWindow.length - 1].webContents.send('check')
+        break;
+      case "2":
+        currentWindow[currentWindow.length - 1].webContents.send('next');
+        break;
+      case "3":
+        currentWindow[currentWindow.length - 1].webContents.send('return');
+        break;
+      case "4":
+        currentWindow[currentWindow.length - 1].webContents.send('previous');
+        break;
+    }
   });
 };
 
@@ -56,68 +100,103 @@ app.on('activate', () => {
   }
 });
 
+
 ipcMain.on('clicked-room', async (event, room_id) =>{
-  console.log(room_id);
   let devices = await getDevices(room_id);
   let room_name = await getRoomName(room_id);
   //console.log(devices);
   // Create the browser window.
   const deviceWindow = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: 800,
+    height: 600,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
     }
   });
-  deviceWindow.loadFile(path.join(__dirname, '../views/devices.html'));
-  deviceWindow.webContents.openDevTools();
+  deviceWindow.loadFile(path.join(__dirname, './views/devices.html'));
+  //deviceWindow.webContents.openDevTools();
   deviceWindow.webContents.on('did-finish-load',  () => {
     deviceWindow.webContents.send('loaded-devices', devices, room_name);
+    deviceWindow.setFullScreen(true)
+    currentWindow.push(deviceWindow);
+    deviceWindow.show();
   });
+})
+
+
+ipcMain.on('clicked-device', async (event, device_id) => {
+  let actions = await getActions(device_id);
+  let device_name = await getDeviceName(device_id);
+  const roomWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+    }
+  });
+  roomWindow.loadFile(path.join(__dirname, './views/actions.html'));
+  //roomWindow.webContents.openDevTools();
+  roomWindow.webContents.on('did-finish-load',  () => {
+    roomWindow.webContents.send('loaded-actions', actions, device_name, isMainApp = false);
+    roomWindow.setFullScreen(true)
+    currentWindow.push(roomWindow);
+    roomWindow.show();
+  });
+})
+
+ipcMain.on('closed-window', () => currentWindow.pop())
+
+ipcMain.on('clicked-action', async (event, action_id) => { 
+  mainActualAction = await getActualMainAction(action_id);
+  console.log(mainActualAction)
+  if(mainActualAction == 'openMainApp'){
+    openMainApp();
+  }else{
+    actual_action = await getActualAction(action_id);
+    device_name = await getActionDeviceName(action_id);
+    device_id = await getActionDeviceId(action_id);
+    if(device_name == 'Light'){
+      client.publish("home/light", JSON.stringify({"type":"light","state":actual_action}))
+    }else{
+      client.publish("home/"+device_name, JSON.stringify({"type":"plug","state":actual_action,"plugNumber":device_id - 1}))
+    }
+  }
+
 })
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-
-
-
-/*  Device.findAll({ attributes: ['id_device', 'device_name'] })
-  .then(device => {
-    console.log(device)
-  })
-  .catch(err => {
-    console.log(err)
-  })
-
-  async function getRoomWithDevice(){
-    try {
-      const awesomeCaptain = await Room.findOne({
-        where: {
-          id_room: 1
-        },
-        include: Device
-      });
-    
-      console.log(awesomeCaptain);
-    } catch (error) {
-      console.log(error);
-    }
-    
-  }
-
-  getRoomWithDevice();
-*/
-
-exports.getRooms = async () => {
+async function getRooms(){
   let rooms = [];
   try {
-  //  console.log('In get rooms');
-    rooms = await Room.findAll({attributes: ['room_id', 'room_name']});
+    rooms = await Room.findAll({attributes: ['room_id','room_name','icon_id']});
     return rooms;
   } catch (error) {
     console.log(error)
   }
+}
+
+async function openMainApp(){
+  rooms = await getRooms();
+  const roomsWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+    }
+  });
+  roomsWindow.loadFile(path.join(__dirname, './views/index.html'));
+  //roomsWindow.webContents.openDevTools();
+  roomsWindow.webContents.on('did-finish-load',  () => {
+    roomsWindow.webContents.send('loaded-rooms', rooms);
+    roomsWindow.setFullScreen(true)
+    currentWindow.push(roomsWindow);
+    roomsWindow.show();
+  });
 }
 
 async function getRoomName (room_id){
@@ -132,6 +211,7 @@ async function getDevices (room_id) {
     //console.log('In get devices');
     devices = await Device.findAll(
       {
+        attributes: ['device_id','device_name','icon_id'],
         where: {room_id: room_id}
       });
     console.log(devices);
@@ -139,7 +219,84 @@ async function getDevices (room_id) {
   } catch (error) {
     console.log(error)
   }
+}
 
+async function getDeviceName(device_id){
+  device = await Device.findOne(
+    {attributes: ['device_name'], where: {device_id: device_id}, });
+  return device.dataValues.device_name;
+}
+
+async function getActionDeviceName(action_id){
+  try {
+    action = await Action.findOne(
+      {attributes: ['device_id'], where: {action_id: action_id}, });
+    actionDeviceId = action.dataValues.device_id;
+    device = await Device.findOne(
+      {attributes: ['device_name'], where: {device_id: actionDeviceId}, });
+    return device.dataValues.device_name;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function getActionDeviceId(action_id){
+  try {
+    action = await Action.findOne(
+      {attributes: ['device_id'], where: {action_id: action_id}, });
+    actionDeviceId = action.dataValues.device_id;
+    return actionDeviceId;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function getActualMainAction(action_id){
+  try {
+    action = await mainAction.findOne({attributes: ['actual_action'], where: {action_id: action_id}, });
+    actual_action = action.dataValues.actual_action;
+    return actual_action;
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
+async function getActualAction(action_id){
+  try {
+    action = await Action.findOne({attributes: ['actual_action'], where: {action_id: action_id}, });
+    actual_action = action.dataValues.actual_action;
+    return actual_action;
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
+async function getActions(device_id){
+  try {
+    //console.log('In get actions');
+    actions = await Action.findAll(
+      {
+        attributes: ['action_id','action_name','icon_id'],
+        where: {device_id: device_id}
+      });
+    //console.log(actions);
+    return actions;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function getAllMainActions(){
+  try {
+    //console.log('In get actions');
+    actions = await mainAction.findAll({attributes: ['action_id', 'action_name', 'icon_id']});
+    console.log(actions);
+    return actions;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 

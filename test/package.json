@@ -47,6 +47,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "jquery": "^3.5.1",
+    "mqtt": "^4.2.6",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
     "sequelize": "^6.3.4",

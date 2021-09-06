@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Casa Inteligente</title>
+    <link rel="stylesheet" href="../style/index.css">
+    <link rel="stylesheet" type="text/css" href="../slick/slick.css"/> 
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="top">
+        <div class="top-button">
+            <button id="check-button" class="button-style"></button>
+        </div>
+        <div class="top-header">
+          <img src="../icons/smart-home.png" alt="smart-home" class="header-icon">
+          <h2>Inicio</h2>
+        </div>
+      </div>
+
+      <div class="middle clearfix">
+          <section class="left column">
+            <button id="left-button" class="button-style prevArrow"></button>
+          </section>
+
+          <section class="center column">
+            <div class="container-center">
+              <div class="title-center">
+                <h3>
+                  Habitaciones
+                </h3>
+              </div>
+              <div class="slider" id="slider">            
+                <!--Habitations-->                  
+              </div><!--slider-->
+            </div><!--container center-->
+          </section><!--center column-->
+
+          <section class="right column">
+            <button id="right-button" class="button-style nextArrow"></button>
+          </section>
+      </div>
+      
+      <div class="bottom">
+          <button id="return-button" class="button-style"></button>
+      </div>
+
+    </div>
+
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script type="text/javascript" src="../slick/slick.min.js"></script>
+    <script type="text/javascript" src="../slider/carousel.js"></script>
+    <script type="text/javascript" src="../room.js"></script>
+  </body>
+
+</html>
